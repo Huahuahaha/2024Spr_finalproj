@@ -367,3 +367,7 @@ class Gamestate():
             else:
                 s += ' ' + str(c)
         return s + '\n'
+
+
+if __name__ == '__main__':
+    game = Gamestate()
