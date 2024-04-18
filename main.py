@@ -367,7 +367,38 @@ class Gamestate():
             else:
                 s += ' ' + str(c)
         return s + '\n'
+def get_start_location(game):
+    while True:
+        line = input('Please input [row column] of your piece: ')
+        fields = re.split('\s+', line)
+        if len(fields) == 2:
+            try:
+                r = int(fields[0])
+                c = int(fields[1])
+                if r >= 0 and r <= 9 and c >= 0 and c <= 12 and game.board[r][c] not in [WALL, EMPTY]:
+                    return (r, c)
+            except:
+                pass
+        print('Invalid location. Try again!')
 
+
+def get_end_location(game):
+    while True:
+        line = input('Please input [row column] to put your piece: ')
+        fields = re.split('\s+', line)
+        if len(fields) == 2:
+            try:
+                r = int(fields[0])
+                c = int(fields[1])
+                if r >= 0 and r <= 9 and c >= 0 and c <= 12 and game.board[r][c] not in [WALL]:
+                    return (r, c)
+            except:
+                pass
+        print('Invalid location. Try again!')
 
 if __name__ == '__main__':
     game = Gamestate()
+    #while True:
+    print(game)
+    start = get_start_location(game)
+    end = get_end_location(game)
