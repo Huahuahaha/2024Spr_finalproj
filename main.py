@@ -396,9 +396,110 @@ def get_end_location(game):
                 pass
         print('Invalid location. Try again!')
 
+def calculate(game, color):
+    score = 0
+    total_piece = 0
+    for r in range(len(game.board)):
+        for c in range(len(game.board[r])):
+            if game.board[r][c] in [EMPTY, WALL]:
+                continue
+            total_piece += 1
+
+    for r in range(len(game.board)):
+        for c in range(len(game.board[r])):
+            if game.board[r][c] in [EMPTY, WALL]:
+                continue
+            sign = 1
+            if game.board[r][c].color != color:
+                sign = -1
+
+            if game.board[r][c].name in [u'車', u'俥']:
+                score += 9 * sign
+            elif game.board[r][c].name in [u'馬', u'傌']:
+                if total_piece >= 17:
+                    score += 4 * sign
+                else:
+                    score += 5 * sign
+            elif game.board[r][c].name in [u'象', u'相']:
+                score += 2 * sign
+            elif game.board[r][c].name in [u'士', u'仕']:
+                score += 2 * sign
+            elif game.board[r][c].name in [u'将', u'帅']:
+                score += 100 * sign
+            elif game.board[r][c].name in [u'砲', u'炮']:
+                score += 4.5 * sign
+            elif game.board[r][c].name in [u'卒', u'兵']:
+                if game.board[r][c].name == u'卒':
+                    if r >= 5:
+                        score += 2 * sign
+                    else:
+                        score += 1 * sign
+                else:
+                    if r <= 4:
+                        score += 2 * sign
+                    else:
+                        score += 1 * sign
+            elif game.board[r][c].name in [u'巨']:
+                #score += 14 * sign
+                score += 0 * sign
+    return score
+
+def max(game, color, depth, alpha, beta):
+    if depth == 0:
+        score = calculate(game, color)
+        return score, None
+    moves = game.get_all_moves()
+    candidate_move = None
+    candidate_score = None
+    for move in moves:
+        game.move(move[0], move[1])
+        score, _ = min(game, color, depth - 1, alpha, beta)
+        game.unmove()
+        if candidate_move == None or score > candidate_score:
+            candidate_move = move
+            candidate_score = score
+        if score > alpha:
+            alpha = score
+        if score >= beta:
+            break
+    return candidate_score, candidate_move
+
+def min(game, color, depth, alpha, beta):
+    if depth == 0:
+        score = calculate(game, color)
+        return score, None
+    moves = game.get_all_moves()
+    candidate_move = None
+    candidate_score = None
+    for move in moves:
+        game.move(move[0], move[1])
+        score, _ = max(game, color, depth - 1, alpha, beta)
+        game.unmove()
+        if candidate_move == None or score < candidate_score:
+            candidate_move = move
+            candidate_score = score
+        if score < beta:
+            beta = score
+        if score <= alpha:
+            break
+    return candidate_score, candidate_move
+
+def alpha_beta_algo(game, depth):
+    _, move = min(game, 'R', depth, -100, 100)
+    return move
+
 if __name__ == '__main__':
     game = Gamestate()
-    #while True:
-    print(game)
-    start = get_start_location(game)
-    end = get_end_location(game)
+    while True:
+        print(game)
+        start = get_start_location(game)
+        end = get_end_location(game)
+        while (start, end) not in game.get_all_moves():
+            print('Invalid move. Try again!')
+            start = get_start_location(game)
+            end = get_end_location(game)
+        game.move(start, end)
+
+        print(game)
+        move = alpha_beta_algo(game, DEPTH)
+        game.move(move[0], move[1])
