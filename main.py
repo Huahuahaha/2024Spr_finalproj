@@ -4,7 +4,7 @@ import random
 
 EMPTY = '  '
 WALL = '##'
-DEPTH = 3
+DEPTH = 4
 
 
 class Piece():
@@ -39,13 +39,94 @@ class Gamestate():
     def is_valid_move(self, start, end):
         return True
 
+    def are_you_winner(self):
+        pos1 = [(0, 5), (0, 6), (0, 7), (1, 5), (1, 6),
+                (1, 7), (2, 5), (2, 6), (2, 7)]
+        pos2 = [(9, 5), (9, 6), (9, 7), (8, 5), (8, 6),
+                (8, 7), (7, 5), (7, 6), (7, 7)]
+        hasJiang = False
+        for pos in pos1:
+            if self.board[pos[0]][pos[1]] != EMPTY and (self.board[pos[0]][pos[1]] == u'将' and self.board[pos[0]][pos[1] + 1] != EMPTY and self.board[pos[0]][pos[1] + 1].name != u'」'):
+                hasJiang = True
+        if not hasJiang:
+            return True
+
+        hasShuai = False
+        for pos in pos2:
+            if self.board[pos[0]][pos[1]] != EMPTY and (self.board[pos[0]][pos[1]] == u'帅' and self.board[pos[0]][pos[1] + 1] != EMPTY and self.board[pos[0]][pos[1] + 1].name != u'」'):
+                hasShuai = True
+                break
+        if not hasShuai:
+            return False
+
+        return None
+
     def move(self, start, end):
         current = copy.deepcopy(self.board)
         self.history.append(current)
+        start_piece = self.board[start[0]][start[1]]
+        end_piece = self.board[end[0]][end[1]]
 
-        piece = self.board[start[0]][start[1]]
-        self.board[start[0]][start[1]] = EMPTY
-        self.board[end[0]][end[1]] = piece
+        start_is_jujiang = False
+        end_is_jujiang = False
+        end_jujiang_pos = None
+        if start_piece.name == u'「':
+            start_is_jujiang = True
+        if end_piece not in [EMPTY, WALL] and end_piece.color != start_piece.color:
+            if end_piece.name == u'「':
+                end_is_jujiang = True
+                end_jujiang_pos = end
+            elif end_piece.name == u'巨':
+                end_is_jujiang = True
+                end_jujiang_pos = (end[0], end[1] - 1)
+            elif end_piece.name == u'」':
+                end_is_jujiang = True
+                end_jujiang_pos = (end[0] - 1, end[1] - 1)
+            elif end_piece.name in [u'将', u'帅'] and (
+                    self.board[end[0]][end[1] + 1] not in [EMPTY, WALL] and self.board[end[0]][
+                end[1] + 1].name == u'」'):
+                end_is_jujiang = True
+                end_jujiang_pos = (end[0] - 1, end[1])
+
+        if not start_is_jujiang and not end_is_jujiang:
+            self.board[start[0]][start[1]] = EMPTY
+            self.board[end[0]][end[1]] = start_piece
+        elif start_is_jujiang and end_is_jujiang:
+            temp = (
+            self.board[start[0]][start[1]], self.board[start[0]][start[1] + 1], self.board[start[0] + 1][start[1]],
+            self.board[start[0] + 1][start[1] + 1])
+            self.board[end_jujiang_pos[0]][end_jujiang_pos[1]] = EMPTY
+            self.board[end_jujiang_pos[0] + 1][end_jujiang_pos[1]] = EMPTY
+            self.board[end_jujiang_pos[0]][end_jujiang_pos[1] + 1] = EMPTY
+            self.board[end_jujiang_pos[0] + 1][end_jujiang_pos[1] + 1] = EMPTY
+            self.board[start[0]][start[1]] = EMPTY
+            self.board[start[0]][start[1] + 1] = EMPTY
+            self.board[start[0] + 1][start[1]] = EMPTY
+            self.board[start[0] + 1][start[1] + 1] = EMPTY
+            self.board[end[0]][end[1]] = temp[0]
+            self.board[end[0]][end[1] + 1] = temp[1]
+            self.board[end[0] + 1][end[1]] = temp[2]
+            self.board[end[0] + 1][end[1] + 1] = temp[3]
+        elif start_is_jujiang:
+            temp = (
+            self.board[start[0]][start[1]], self.board[start[0]][start[1] + 1], self.board[start[0] + 1][start[1]],
+            self.board[start[0] + 1][start[1] + 1])
+            self.board[start[0]][start[1]] = EMPTY
+            self.board[start[0]][start[1] + 1] = EMPTY
+            self.board[start[0] + 1][start[1]] = EMPTY
+            self.board[start[0] + 1][start[1] + 1] = EMPTY
+            self.board[end[0]][end[1]] = temp[0]
+            self.board[end[0]][end[1] + 1] = temp[1]
+            self.board[end[0] + 1][end[1]] = temp[2]
+            self.board[end[0] + 1][end[1] + 1] = temp[3]
+        elif end_is_jujiang:
+            self.board[end_jujiang_pos[0]][end_jujiang_pos[1]] = EMPTY
+            self.board[end_jujiang_pos[0] + 1][end_jujiang_pos[1]] = EMPTY
+            self.board[end_jujiang_pos[0]][end_jujiang_pos[1] + 1] = EMPTY
+            self.board[end_jujiang_pos[0] + 1][end_jujiang_pos[1] + 1] = EMPTY
+            self.board[start[0]][start[1]] = EMPTY
+            self.board[end[0]][end[1]] = start_piece
+
         self.redMove = not self.redMove
 
     def unmove(self):
