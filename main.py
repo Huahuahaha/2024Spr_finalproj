@@ -435,6 +435,34 @@ class Gamestate():
                 continue
         return moves
 
+    def get_jujiang_move(self, start):
+        ''' JuJiang 巨将 or 巨帅.
+        '''
+        moves = []
+        offset = [(-1, 0), (1, 0), (0, 1), (0, -1)]
+        for off in offset:
+            end = (start[0] + off[0], start[1] + off[1])
+            pieces = [end, (end[0] + 1, end[1]), (end[0] , end[1] + 1), (end[0] + 1, end[1] + 1)]
+            valid = True
+            for piece in pieces:
+                if piece[0] >= 0 and piece[0] < len(self.board) and piece[1] >= 0 and piece[1] < len(self.board[0]):
+                    if self.board[piece[0]][piece[1]] == EMPTY:
+                        continue
+                    elif self.board[piece[0]][piece[1]] == WALL:
+                        valid = False
+                        break
+                    elif self.board[piece[0]][piece[1]].color != self.board[start[0]][start[1]].color:
+                        continue
+                    elif piece not in pieces:
+                        valid = False
+                        break
+                else:
+                    valid = False
+                    break
+            if valid:
+                moves.append((start, end))
+        return moves
+
     def __str__(self):
         s = '\n'
         for r in range(len(self.board)):
@@ -456,8 +484,7 @@ def get_start_location(game):
             try:
                 r = int(fields[0])
                 c = int(fields[1])
-                if r >= 0 and r <= 9 and c >= 0 and c <= 12 and game.board[r][c] not in [WALL, EMPTY]:
-                    return (r, c)
+                return (r, c)
             except:
                 pass
         print('Invalid location. Try again!')
@@ -477,7 +504,7 @@ def get_end_location(game):
                 pass
         print('Invalid location. Try again!')
 
-def calculate(game, color):
+def calculate(game):
     score = 0
     total_piece = 0
     for r in range(len(game.board)):
@@ -491,7 +518,7 @@ def calculate(game, color):
             if game.board[r][c] in [EMPTY, WALL]:
                 continue
             sign = 1
-            if game.board[r][c].color != color:
+            if game.board[r][c].color == 'B':
                 sign = -1
 
             if game.board[r][c].name in [u'車', u'俥']:
@@ -521,9 +548,9 @@ def calculate(game, color):
                     else:
                         score += 1 * sign
             elif game.board[r][c].name in [u'巨']:
-                #score += 14 * sign
-                score += 0 * sign
+                score += 14 * sign
     return score
+
 
 def max(game, color, depth, alpha, beta):
     if depth == 0:
@@ -545,6 +572,7 @@ def max(game, color, depth, alpha, beta):
             break
     return candidate_score, candidate_move
 
+
 def min(game, color, depth, alpha, beta):
     if depth == 0:
         score = calculate(game, color)
@@ -565,14 +593,32 @@ def min(game, color, depth, alpha, beta):
             break
     return candidate_score, candidate_move
 
+
 def alpha_beta_algo(game, depth):
     _, move = min(game, 'R', depth, -100, 100)
     return move
 
+
 if __name__ == '__main__':
+    while True:
+        print('Welcome to the Chinese Chess!')
+        print('1. Player vs AI')
+        print('2. Player vs Player')
+        ai = input('Please select: ')
+        if ai == '1' or ai == '2':
+            break
+
     game = Gamestate()
     while True:
         print(game)
+        winner = game.are_you_winner()
+        if winner != None:
+            if winner == True:
+                print('You win!')
+            else:
+                print('You lose!')
+            break
+        print('--------------- Red Turn ---------------')
         start = get_start_location(game)
         end = get_end_location(game)
         while (start, end) not in game.get_all_moves():
@@ -582,5 +628,22 @@ if __name__ == '__main__':
         game.move(start, end)
 
         print(game)
-        move = alpha_beta_algo(game, DEPTH)
-        game.move(move[0], move[1])
+        winner = game.are_you_winner()
+        if winner != None:
+            if winner == True:
+                print('You win!')
+            else:
+                print('You lose!')
+            break
+        if ai == '1':
+            move = alpha_beta_algo(game, DEPTH)
+            game.move(move[0], move[1])
+        else:
+            print('-------------- Black Turn --------------')
+            start = get_start_location(game)
+            end = get_end_location(game)
+            while (start, end) not in game.get_all_moves():
+                print('Invalid move. Try again!')
+                start = get_start_location(game)
+                end = get_end_location(game)
+            game.move(start, end)
