@@ -2,7 +2,7 @@ import re
 import copy
 import random
 
-EMPTY = '  '
+EMPTY = '　'
 WALL = '##'
 DEPTH = 4
 
@@ -22,16 +22,26 @@ class Piece():
 class Gamestate():
     def __init__(self):
         self.board = [
-            [WALL, WALL, Piece(u'車', 'B'), Piece(u'馬', 'B'), Piece(u'象', 'B'), Piece(u'士', 'B'), Piece(u'将', 'B'), Piece(u'士', 'B'), Piece(u'象', 'B'), Piece(u'馬', 'B'), Piece(u'車', 'B'), WALL, WALL],
+            [WALL, WALL, Piece(u'車', 'B'), Piece(u'馬', 'B'), Piece(u'象', 'B'), Piece(u'士', 'B'), Piece(u'将', 'B'),
+             Piece(u'士', 'B'), Piece(u'象', 'B'), Piece(u'馬', 'B'), Piece(u'車', 'B'), WALL, WALL],
             [WALL, WALL, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, WALL, WALL],
-            [WALL, WALL, EMPTY, Piece(u'砲', 'B'), EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, Piece( u'砲', 'B'), EMPTY, WALL, WALL],
-            [WALL, WALL, Piece(u'卒', 'B'), EMPTY, Piece(u'卒', 'B'), EMPTY, Piece(u'卒', 'B'), EMPTY, Piece(u'卒', 'B'), EMPTY, Piece(u'卒', 'B'), WALL, WALL],
-            [Piece(u'「', 'B'), Piece(u'巨', 'B'), EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, Piece(u'「', 'R'), Piece(u'巨', 'R')],
-            [Piece(u'将', 'B'), Piece(u'」', 'B'), EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, Piece(u'帅', 'R'), Piece(u'」', 'R')],
-            [WALL, WALL, Piece(u'兵', 'R'), EMPTY, Piece(u'兵', 'R'), EMPTY, Piece(u'兵', 'R'), EMPTY, Piece(u'兵', 'R'), EMPTY, Piece(u'兵', 'R'), WALL, WALL],
-            [WALL, WALL, EMPTY, Piece(u'炮', 'R'), EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, Piece(u'炮', 'R'), EMPTY, WALL, WALL],
+            [WALL, WALL, EMPTY, Piece(u'砲', 'B'), EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, Piece(u'砲', 'B'), EMPTY, WALL,
+             WALL],
+            [WALL, WALL, Piece(u'卒', 'B'), EMPTY, Piece(u'卒', 'B'), EMPTY, Piece(u'卒', 'B'), EMPTY,
+             Piece(u'卒', 'B'), EMPTY, Piece(u'卒', 'B'), WALL, WALL],
+            [Piece(u'「', 'B'), Piece(u'巨', 'B'), EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
+             Piece(u'「', 'R'), Piece(u'巨', 'R')],
+            [Piece(u'将', 'B'), Piece(u'」', 'B'), EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
+             Piece(u'帅', 'R'), Piece(u'」', 'R')],
+            # [WALL, WALL, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, WALL, WALL],
+            # [WALL, WALL, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, WALL, WALL],
+            [WALL, WALL, Piece(u'兵', 'R'), EMPTY, Piece(u'兵', 'R'), EMPTY, Piece(u'兵', 'R'), EMPTY,
+             Piece(u'兵', 'R'), EMPTY, Piece(u'兵', 'R'), WALL, WALL],
+            [WALL, WALL, EMPTY, Piece(u'炮', 'R'), EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, Piece(u'炮', 'R'), EMPTY, WALL,
+             WALL],
             [WALL, WALL, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, WALL, WALL],
-            [WALL, WALL, Piece(u'俥', 'R'), Piece(u'傌', 'R'), Piece(u'相', 'R'), Piece(u'仕', 'R'), Piece(u'帅', 'R'), Piece(u'仕', 'R'), Piece(u'相', 'R'), Piece(u'傌', 'R'), Piece(u'俥', 'R'), WALL, WALL],
+            [WALL, WALL, Piece(u'俥', 'R'), Piece(u'傌', 'R'), Piece(u'相', 'R'), Piece(u'仕', 'R'), Piece(u'帅', 'R'),
+             Piece(u'仕', 'R'), Piece(u'相', 'R'), Piece(u'傌', 'R'), Piece(u'俥', 'R'), WALL, WALL],
         ]
         self.redMove = True
         self.history = []
@@ -46,16 +56,23 @@ class Gamestate():
                 (8, 7), (7, 5), (7, 6), (7, 7)]
         hasJiang = False
         for pos in pos1:
-            if self.board[pos[0]][pos[1]] != EMPTY and (self.board[pos[0]][pos[1]] == u'将' and self.board[pos[0]][pos[1] + 1] != EMPTY and self.board[pos[0]][pos[1] + 1].name != u'」'):
-                hasJiang = True
+            if self.board[pos[0]][pos[1]] != EMPTY and self.board[pos[0]][pos[1]].name == u'将':
+                if (self.board[pos[0]][pos[1] + 1] != EMPTY and self.board[pos[0]][pos[1] + 1].name == u'」'):
+                    pass
+                else:
+                    hasJiang = True
+                    break
         if not hasJiang:
             return True
 
         hasShuai = False
         for pos in pos2:
-            if self.board[pos[0]][pos[1]] != EMPTY and (self.board[pos[0]][pos[1]] == u'帅' and self.board[pos[0]][pos[1] + 1] != EMPTY and self.board[pos[0]][pos[1] + 1].name != u'」'):
-                hasShuai = True
-                break
+            if self.board[pos[0]][pos[1]] != EMPTY and self.board[pos[0]][pos[1]].name == u'帅':
+                if (self.board[pos[0]][pos[1] + 1] != EMPTY and self.board[pos[0]][pos[1] + 1].name == u'」'):
+                    pass
+                else:
+                    hasShuai = True
+                    break
         if not hasShuai:
             return False
 
@@ -153,14 +170,15 @@ class Gamestate():
                     moves.extend(self.get_xiang_move((r, c)))
                 elif self.board[r][c].name in [u'士', u'仕']:
                     moves.extend(self.get_shi_move((r, c)))
-                elif self.board[r][c].name in [u'将', u'帅']:
+                elif self.board[r][c].name in [u'将', u'帅'] and (
+                        self.board[r][c + 1] not in [EMPTY, WALL] and self.board[r][c + 1].name != u'」'):
                     moves.extend(self.get_jiang_move((r, c)))
                 elif self.board[r][c].name in [u'砲', u'炮']:
                     moves.extend(self.get_pao_move((r, c)))
                 elif self.board[r][c].name in [u'卒', u'兵']:
                     moves.extend(self.get_zu_move((r, c)))
-                elif self.board[r][c].name in [u'巨', u'将', u'帅', u'「', u'」']:
-                    pass
+                elif self.board[r][c].name in [u'「']:
+                    moves.extend(self.get_jujiang_move((r, c)))
         random.shuffle(moves)
         return moves
 
@@ -236,12 +254,12 @@ class Gamestate():
         Except some piece may block the horse leg.
         '''
         moves = []
-        offset = [(-1, -2, 0, -1), (-2, -1, -1, 0), (1, -2, 0, -1), (-2, 1, -1,
-                                                                     0), (1, 2, 0, 1), (2, 1, 1, 0), (-1, 2, 0, 1), (2, -1, 1, 0)]
+        offset = [(-1, -2, 0, -1), (-2, -1, -1, 0), (1, -2, 0, -1), (-2, 1, -1, 0), (1, 2, 0, 1), (2, 1, 1, 0),
+                  (-1, 2, 0, 1), (2, -1, 1, 0)]
         for off in offset:
             end = (start[0] + off[0], start[1] + off[1])
             if end[0] >= 0 and end[0] < len(self.board) and end[1] >= 0 and end[1] < len(self.board[0]):
-                if self.board[start[0] + off[2]][start[1] + off[3]] != EMPTY: # blocked leg
+                if self.board[start[0] + off[2]][start[1] + off[3]] != EMPTY:  # blocked leg
                     continue
                 if self.board[end[0]][end[1]] == EMPTY:
                     moves.append((start, end))
@@ -265,7 +283,7 @@ class Gamestate():
         for end in end_pos:
             if (start in pos1 and end in pos1) or (start in pos2 and end in pos2):
                 if abs(end[0] - start[0]) == 2 and abs(end[1] - start[1]) == 2:
-                    if self.board[(start[0] + end[0]) // 2][(start[1] + end[1]) // 2] != EMPTY: # blocked leg
+                    if self.board[(start[0] + end[0]) // 2][(start[1] + end[1]) // 2] != EMPTY:  # blocked leg
                         continue
                     if self.board[end[0]][end[1]] == EMPTY:
                         moves.append((start, end))
@@ -312,7 +330,8 @@ class Gamestate():
         end_pos.extend(pos2)
         for end in end_pos:
             if (start in pos1 and end in pos1) or (start in pos2 and end in pos2):
-                if abs(end[0] - start[0]) in [0, 1] and abs(end[1] - start[1]) in [0, 1] and (abs(end[0] - start[0]) + abs(end[1] - start[1]) == 1):
+                if abs(end[0] - start[0]) in [0, 1] and abs(end[1] - start[1]) in [0, 1] and (
+                        abs(end[0] - start[0]) + abs(end[1] - start[1]) == 1):
                     if self.board[end[0]][end[1]] == EMPTY:
                         moves.append((start, end))
                     elif self.board[end[0]][end[1]] == WALL:
@@ -340,6 +359,12 @@ class Gamestate():
             else:
                 if not can_capture:
                     can_capture = True
+                    if self.board[end[0]][end[1]].name in [u'「', u'巨', u'」']:
+                        i += 1
+                    elif self.board[end[0]][end[1]].name in [u'将', u'帅'] and (
+                            self.board[end[0]][end[1] + 1] not in [EMPTY, WALL] and self.board[end[0]][
+                        end[1] + 1].name == u'」'):
+                        i += 1
                 elif self.board[end[0]][end[1]].color != self.board[start[0]][start[1]].color:
                     moves.append((start, end))
                     break
@@ -360,6 +385,12 @@ class Gamestate():
             else:
                 if not can_capture:
                     can_capture = True
+                    if self.board[end[0]][end[1]].name in [u'「', u'巨', u'」']:
+                        i += 1
+                    elif self.board[end[0]][end[1]].name in [u'将', u'帅'] and (
+                            self.board[end[0]][end[1] + 1] not in [EMPTY, WALL] and self.board[end[0]][
+                        end[1] + 1].name == u'」'):
+                        i += 1
                 elif self.board[end[0]][end[1]].color != self.board[start[0]][start[1]].color:
                     moves.append((start, end))
                     break
@@ -380,6 +411,12 @@ class Gamestate():
             else:
                 if not can_capture:
                     can_capture = True
+                    if self.board[end[0]][end[1]].name in [u'「', u'巨', u'」']:
+                        i += 1
+                    elif self.board[end[0]][end[1]].name in [u'将', u'帅'] and (
+                            self.board[end[0]][end[1] + 1] not in [EMPTY, WALL] and self.board[end[0]][
+                        end[1] + 1].name == u'」'):
+                        i += 1
                 elif self.board[end[0]][end[1]].color != self.board[start[0]][start[1]].color:
                     moves.append((start, end))
                     break
@@ -400,6 +437,12 @@ class Gamestate():
             else:
                 if not can_capture:
                     can_capture = True
+                    if self.board[end[0]][end[1]].name in [u'「', u'巨', u'」']:
+                        i += 1
+                    elif self.board[end[0]][end[1]].name in [u'将', u'帅'] and (
+                            self.board[end[0]][end[1] + 1] not in [EMPTY, WALL] and self.board[end[0]][
+                        end[1] + 1].name == u'」'):
+                        i += 1
                 elif self.board[end[0]][end[1]].color != self.board[start[0]][start[1]].color:
                     moves.append((start, end))
                     break
@@ -442,7 +485,7 @@ class Gamestate():
         offset = [(-1, 0), (1, 0), (0, 1), (0, -1)]
         for off in offset:
             end = (start[0] + off[0], start[1] + off[1])
-            pieces = [end, (end[0] + 1, end[1]), (end[0] , end[1] + 1), (end[0] + 1, end[1] + 1)]
+            pieces = [end, (end[0] + 1, end[1]), (end[0], end[1] + 1), (end[0] + 1, end[1] + 1)]
             valid = True
             for piece in pieces:
                 if piece[0] >= 0 and piece[0] < len(self.board) and piece[1] >= 0 and piece[1] < len(self.board[0]):
@@ -476,6 +519,8 @@ class Gamestate():
             else:
                 s += ' ' + str(c)
         return s + '\n'
+
+
 def get_start_location(game):
     while True:
         line = input('Please input [row column] of your piece: ')
@@ -503,6 +548,7 @@ def get_end_location(game):
             except:
                 pass
         print('Invalid location. Try again!')
+
 
 def calculate(game):
     score = 0
@@ -552,50 +598,50 @@ def calculate(game):
     return score
 
 
-def max(game, color, depth, alpha, beta):
+def max(game, depth, alpha, beta):
     if depth == 0:
-        score = calculate(game, color)
+        score = calculate(game)
         return score, None
     moves = game.get_all_moves()
     candidate_move = None
     candidate_score = None
     for move in moves:
         game.move(move[0], move[1])
-        score, _ = min(game, color, depth - 1, alpha, beta)
+        score, _ = min(game, depth - 1, alpha, beta)
         game.unmove()
         if candidate_move == None or score > candidate_score:
             candidate_move = move
             candidate_score = score
-        if score > alpha:
-            alpha = score
         if score >= beta:
-            break
+            return candidate_score, candidate_move
+        elif score > alpha:
+            alpha = score
     return candidate_score, candidate_move
 
 
-def min(game, color, depth, alpha, beta):
+def min(game, depth, alpha, beta):
     if depth == 0:
-        score = calculate(game, color)
+        score = calculate(game)
         return score, None
     moves = game.get_all_moves()
     candidate_move = None
     candidate_score = None
     for move in moves:
         game.move(move[0], move[1])
-        score, _ = max(game, color, depth - 1, alpha, beta)
+        score, _ = max(game, depth - 1, alpha, beta)
         game.unmove()
         if candidate_move == None or score < candidate_score:
             candidate_move = move
             candidate_score = score
-        if score < beta:
-            beta = score
         if score <= alpha:
-            break
+            return candidate_score, candidate_move
+        elif score < beta:
+            beta = score
     return candidate_score, candidate_move
 
 
 def alpha_beta_algo(game, depth):
-    _, move = min(game, 'R', depth, -100, 100)
+    _, move = min(game, depth, -100, 100)
     return move
 
 
