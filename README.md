@@ -3,7 +3,7 @@
 Group Member: Jintao Cao, Xicheng Guo
 
 ## Game Rules:
-
+![alt text](images/Xiangqi_Board.png)
 
 ## Deliverables and other Requirements:
 
