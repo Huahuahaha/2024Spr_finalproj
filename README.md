@@ -4,7 +4,9 @@ Group Member: Jintao Cao, Xicheng Guo
 
 ## Game Rules:
 ![alt text](images/Board.png)
+
 Traindiontal rules cite form(https://en.wikipedia.org/wiki/Xiangqi)
+
 ![alt text](images/Rules1.png)
 ![alt text](images/Rules2.png)
 ![alt text](images/Rules3.png)
