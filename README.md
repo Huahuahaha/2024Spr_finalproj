@@ -3,8 +3,12 @@
 Group Member: Jintao Cao, Xicheng Guo
 
 ## Game Rules:
-![alt text](images/Xiangqi_Board.png)
-
+![alt text](images/Board.png)
+![alt text](images/Rules1.png)
+![alt text](images/Rules2.png)
+![alt text](images/Rules3.png)
+Super Piece:
+      巨将/巨帅 occupy four points. They move and capture by advancing one point. However, they can eat multiple pieces at one time because they occupy four points. Other pieces can eat them when either of the points of 巨将/巨帅 is occupied.
 ## Deliverables and other Requirements:
 
 * Have some fun!
