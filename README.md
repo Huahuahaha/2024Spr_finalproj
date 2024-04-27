@@ -12,6 +12,10 @@ Traindiontal rules cite form(https://en.wikipedia.org/wiki/Xiangqi)
 ![alt text](images/Rules3.png)
 Super Piece:
       巨将/巨帅 occupy four points. They move and capture by advancing one point. However, they can eat multiple pieces at one time because they occupy four points. Other pieces can eat them when either of the points of 巨将/巨帅 is occupied.
+## Program guide:
+Our program can fight both with AI and your friends. Players type into their piece row and column coordinates and their target position.
+
+![alt text](images/demo.png)
 ## Deliverables and other Requirements:
 
 * Have some fun!
