@@ -82,29 +82,28 @@ class Gamestate():
         current = copy.deepcopy(self.board)
         self.history.append(current)
         start_piece = self.board[start[0]][start[1]]
+        end_piece = self.board[end[0]][end[1]]
 
         start_is_jujiang = False
         end_is_jujiang = False
         end_jujiang_pos = None
         if start_piece.name == u'「':
             start_is_jujiang = True
-        for d in [(0, 0), (0, 1), (1, 0), (1, 1)]:
-            end_piece = self.board[end[0] + d[0]][end[1] + d[1]]
-            if end_piece not in [EMPTY, WALL] and end_piece.color != start_piece.color:
-                if end_piece.name == u'「':
-                    end_is_jujiang = True
-                    end_jujiang_pos = end
-                elif end_piece.name == u'巨':
-                    end_is_jujiang = True
-                    end_jujiang_pos = (end[0] + d[0], end[1] + d[1] - 1)
-                elif end_piece.name == u'」':
-                    end_is_jujiang = True
-                    end_jujiang_pos = (end[0] + d[0] - 1, end[1] + d[1] - 1)
-                elif end_piece.name in [u'将', u'帅'] and (
-                        self.board[end[0] + d[0]][end[1] + d[1] + 1] not in [EMPTY, WALL] and self.board[end[0] + d[0]][
-                    end[1] + d[1] + 1].name == u'」'):
-                    end_is_jujiang = True
-                    end_jujiang_pos = (end[0] + d[0] - 1, end[1] + d[1])
+        if end_piece not in [EMPTY, WALL] and end_piece.color != start_piece.color:
+            if end_piece.name == u'「':
+                end_is_jujiang = True
+                end_jujiang_pos = end
+            elif end_piece.name == u'巨':
+                end_is_jujiang = True
+                end_jujiang_pos = (end[0], end[1] - 1)
+            elif end_piece.name == u'」':
+                end_is_jujiang = True
+                end_jujiang_pos = (end[0] - 1, end[1] - 1)
+            elif end_piece.name in [u'将', u'帅'] and (
+                    self.board[end[0]][end[1] + 1] not in [EMPTY, WALL] and self.board[end[0]][
+                end[1] + 1].name == u'」'):
+                end_is_jujiang = True
+                end_jujiang_pos = (end[0] - 1, end[1])
 
         if not start_is_jujiang and not end_is_jujiang:
             self.board[start[0]][start[1]] = EMPTY
