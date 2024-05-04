@@ -17,12 +17,12 @@ Our program can fight both with AI and your friends. Players type into their pie
 
 ![alt text](images/demo.png)
 
-## Complexity of heuristic evaluation function：
-# Heuristic evaluation function ('calculate()')：
+# Complexity of heuristic evaluation function：
+## Heuristic evaluation function ('calculate()')：
 This function iterates through every cell on the game board to calculate a score. For each cell, it checks if the cell is empty or a wall, and if not, it assigns a score based on the type of piece and additional game state considerations (like the total number of pieces).
 Assuming the board is of size 𝑁×M(Our actual game board is 9×10+8), the function performs a constant amount of work for each cell, resulting in a time complexity of O(N^2).
   
-# All Legal Moves ('game.get_all_moves()'):
+## All Legal Moves ('game.get_all_moves()'):
 The complexity of this function depends on how it identifies legal actions. For the game Xiangqi, identifying whether an action is legal requires analyzing three aspects.
 The first is to choose whether there is a chess piece in the original position of the moved chess piece. This can be understood as whether the user selects the wrong initial position of the chess piece. In our code, get_start_location() plays a role in identifying this situation. Its complexity is O(1).
 The second is to choose whether the target position of moving the chess piece is legal. In our code, get_end_location() plays a role in identifying this situation. Its complexity is O(1).
