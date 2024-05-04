@@ -32,3 +32,8 @@ The third is to choose a way to move the chess pieces that conforms to the movem
 ![alt text](images/configuration.png)
 
 This image tests a two-player battle scenario. Here players actually completed a total of 4 rounds (two for each player). It can be seen that the number of runs of the "move" function is 4. Among them, a player made invalid moves twice during the test. We can see that the running events of the program are mainly concentrated in get_end_location() and get_start_location(). These two functions are used to get the movement instructions and determine whether they comply with the rules. In terms of the number of times the function is run. The independent movement analysis for each type of piece changes according to the number of pieces remaining in the bucket. You can see that "ZU" has the highest number of movement analysis runs because each player has five "ZU" at the start. At the same time, the number of runs of the "are_you_win" function that determines the outcome is the number of rounds + 1.
+
+![alt text](images/AIconfiguration1.png)
+![alt text](images/AIconfiguration3.png)
+These two pictures show scenes of AI and a player playing. Picture 1 shows the end of the first round for both sides. Picture 2 shows the end of the third round between the two sides. Figure 1 shows that AI’s ‘Min-max’ function provides 9411 (min) and 418 (max) movement analysis completions. Figure 2 shows that AI's Min-max function provides 112672 (min) and 10982 (max) movement analysis. The sum of these two times is the total number of all 'move' function calls. At the same time, in terms of running time, the 'Min-max' function consumes the most time in AI running.
+
